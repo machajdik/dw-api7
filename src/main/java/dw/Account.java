@@ -124,7 +124,7 @@ public class Account {
 		}
 		return null;
 	}
-	
+
 	public void reinitRecurringTransactions(LocalDate now, boolean readFromIT) {
 		recurringTransactions.clear();
 
@@ -133,17 +133,19 @@ public class Account {
 
 		if (readFromIT) {
 			Map<String, AnalysisResponse> map = IntelligentTransactionsClient.analyse(transactions);
-			for (String id : map.keySet()) {
-				getTransaction(id).setRecurringScore(map.get(id).getRecurring_monthly());
+			if (map != null) {
+				for (String id : map.keySet()) {
+					getTransaction(id).setRecurringScore(map.get(id).getRecurring_monthly());
+				}
 			}
 		}
-		
+
 		Map<String, Map<LocalDate, BigDecimal>> recur = new HashMap<>();
 		for (Transaction rt : transactions) {
 			String key = rt.getIban() == null ? rt.getName() : rt.getIban();
 			if (StringUtils.isEmpty(key))
 				continue;
-			
+
 			recur.putIfAbsent(key, new HashMap<>());
 			Map<LocalDate, BigDecimal> dates = recur.get(key);
 			dates.putIfAbsent(rt.getDate(), BigDecimal.ZERO);
@@ -195,7 +197,8 @@ public class Account {
 				if (raw.getIban().equals(rt.getIban())) {
 					raw.setRecurringTransaction(rt);
 					if (readFromIT)
-						System.out.println("Found recurring: " + raw.getTransactionId() + ", score from IT: " + raw.getRecurringScore());
+						System.out.println("Found recurring: " + raw.getTransactionId() + ", score from IT: "
+								+ raw.getRecurringScore());
 				}
 			}
 		}
