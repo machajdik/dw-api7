@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +27,11 @@ public class PredictionController {
 	@RequestMapping("/prediction")
 	public ResponseEntity<Prediction> prediction(@RequestParam(value = "account", required = true) String accountId,
 			@RequestParam(value = "reader", defaultValue = "DemoDataReader") String readerName, 
-			@RequestParam(value = "it", defaultValue = "true") String readFromIT) {
+			@RequestParam(value = "it", defaultValue = "true") String readFromIT, HttpServletResponse  response) {
 
+		// Access-Control-Allow-Origin: *
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		
 		DataReader reader;
 		try {
 			reader = (DataReader) Class.forName("dw.data." + readerName).newInstance();
