@@ -7,6 +7,7 @@
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+	
 
 	<name>dw-api7</name>
 	<description>Demo project for Spring Boot</description>
