@@ -21,7 +21,7 @@ public class DispoWarner {
 	// maximal erlaubter unterschied bei recurring transactions (0.1=10%)
 	public static final double MAX_REURRING_DEVIATION = 0.2;
 	
-	private static final int FUTURE_DAYS = 120;
+	private static final int FUTURE_DAYS = 365;
 
 	public void run(List<Account> accounts, boolean readFromIT) {
 

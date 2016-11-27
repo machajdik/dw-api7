@@ -3,6 +3,8 @@ package dw;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,9 +59,23 @@ public class PredictionController {
 		Prediction p = new Prediction();
 		LocalDate now = LocalDate.now();
 		p.setBalanceNow(a.getBalance(now));
-
+		
 		// TODO set zero date
-
+		if (a.getBalance(now).signum() <= 0) {
+			p.setDateZero(java.sql.Date.valueOf(now));
+		} else {
+			List<LocalDate> list = new ArrayList<>();
+			list.addAll(a.getFuture().keySet());
+			Collections.sort(list);
+			for (LocalDate date : list) {
+				if (a.getFuture().get(date).signum() <= 0) {
+					p.setDateZero(java.sql.Date.valueOf(date));
+					break;
+				}
+			}
+		}
+			
+		
 		// set future and past
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, BigDecimal> future = new HashMap<>();
