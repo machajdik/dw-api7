@@ -1,6 +1,5 @@
 package dw.data;
 
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +9,11 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import dw.Account;
+import dw.http.HttpRetryUtils;
 
 public class DemoDataReader implements DataReader {
 
-	private static final String SOURCE = "https://raw.githubusercontent.com/a2800276/postbankdatagen/master/demo.long.json";
+	private static final String SOURCE = "https://raw.githubusercontent.com/machajdik/dw-api7/master/demo.long.json";
 
 	@Override
 	public List<Account> readData() {
@@ -25,8 +25,8 @@ public class DemoDataReader implements DataReader {
 			@SuppressWarnings("serial")
 			Type mapType = new TypeToken<Map<String, List<Transaction>>>() {
 			}.getType();
-			// Map<String, List<Transaction>> map = gson.fromJson(HttpRetryUtils.getInstance().getString(SOURCE), mapType);
-			Map<String, List<Transaction>> map = gson.fromJson(new FileReader("C:\\java\\postbank\\demo.long.json"), mapType);
+			Map<String, List<Transaction>> map = gson.fromJson(HttpRetryUtils.getInstance().getString(SOURCE), mapType);
+			// Map<String, List<Transaction>> map = gson.fromJson(new FileReader("C:\\java\\postbank\\demo.long.json"), mapType);
 
 			for (String accountId : map.keySet()) {
 				System.out.println("Read Account: " + accountId);
