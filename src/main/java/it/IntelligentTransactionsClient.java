@@ -30,7 +30,7 @@ public class IntelligentTransactionsClient {
 		} catch (JsonSyntaxException e) {
 			throw new RuntimeException(e);
 		} catch (Exception e) {
-			e.printStackTrace(e);
+			e.printStackTrace();
 			return null;
 		}
 		
