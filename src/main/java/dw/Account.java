@@ -19,6 +19,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import dw.data.Transaction;
+import it.AnalysisResponse;
+import it.IntelligentTransactionsClient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -123,23 +125,24 @@ public class Account {
 		return null;
 	}
 	
-	public void reinitRecurringTransactions(LocalDate now) {
+	public void reinitRecurringTransactions(LocalDate now, boolean readFromIT) {
 		recurringTransactions.clear();
 
 		LocalDate minDate = null, maxDate = null;
 		List<Transaction> rawTransactionsThatAreRecurring = new ArrayList<>();
 
-//		Map<String, AnalysisResponse> map = IntelligentTransactionsClient.analyse(transactions);
-//		for (String id : map.keySet()) {
-//			getTransaction(id).setRecurringScore(map.get(id).getRecurring_monthly());
-//		}
+		if (readFromIT) {
+			Map<String, AnalysisResponse> map = IntelligentTransactionsClient.analyse(transactions);
+			for (String id : map.keySet()) {
+				getTransaction(id).setRecurringScore(map.get(id).getRecurring_monthly());
+			}
+		}
 		
 		Map<String, Map<LocalDate, BigDecimal>> recur = new HashMap<>();
 		for (Transaction rt : transactions) {
 			String key = rt.getIban() == null ? rt.getName() : rt.getIban();
 			if (StringUtils.isEmpty(key))
 				continue;
-			
 			
 			recur.putIfAbsent(key, new HashMap<>());
 			Map<LocalDate, BigDecimal> dates = recur.get(key);
@@ -188,10 +191,12 @@ public class Account {
 
 			RecurringTransaction rt = new RecurringTransaction(medianAmount, minDate, endDate, avgDiff, key, key);
 			recurringTransactions.add(rt);
-//			System.out.println("Found recurring: " + rt.);
 			for (Transaction raw : rawTransactionsThatAreRecurring) {
-				if (raw.getIban().equals(rt.getIban()))
+				if (raw.getIban().equals(rt.getIban())) {
 					raw.setRecurringTransaction(rt);
+					if (readFromIT)
+						System.out.println("Found recurring: " + raw.getTransactionId() + ", score from IT: " + raw.getRecurringScore());
+				}
 			}
 		}
 

@@ -22,7 +22,8 @@ public class PredictionController {
 
 	@RequestMapping("/prediction")
 	public ResponseEntity<Prediction> prediction(@RequestParam(value = "account", required = true) String accountId,
-			@RequestParam(value = "reader", defaultValue = "DemoDataReader") String readerName) {
+			@RequestParam(value = "reader", defaultValue = "DemoDataReader") String readerName, 
+			@RequestParam(value = "it", defaultValue = "true") String readFromIT) {
 
 		DataReader reader;
 		try {
@@ -41,7 +42,7 @@ public class PredictionController {
 			}
 		}
 		
-		new DispoWarner().run(accounts);
+		new DispoWarner().run(accounts, Boolean.valueOf(readFromIT));
 
 		Account a = null;
 		for (Account account : accounts) {

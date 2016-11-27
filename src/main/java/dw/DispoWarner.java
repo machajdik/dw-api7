@@ -23,13 +23,13 @@ public class DispoWarner {
 	
 	private static final int FUTURE_DAYS = 120;
 
-	public void run(List<Account> accounts) {
+	public void run(List<Account> accounts, boolean readFromIT) {
 
 		LocalDate now = LocalDate.now();
 		
 		for (Account a : accounts) {
 			System.out.println("Processing Account: " + a.getId());
-			a.reinitRecurringTransactions(now);
+			a.reinitRecurringTransactions(now, readFromIT);
 			a.reinitWeeklySpending();
 			
 			DataWriter.writePast(a, now);
